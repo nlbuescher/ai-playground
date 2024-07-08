@@ -1,22 +1,19 @@
 plugins {
-    kotlin("jvm") version "2.0.0"
+	kotlin("jvm") version "2.0.0"
 }
 
-group = "dev.buescher"
-version = "1.0-SNAPSHOT"
+group = "dev.buescher.ai_playground"
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 dependencies {
-    testImplementation(kotlin("test"))
-}
-
-tasks.test {
-    useJUnitPlatform()
+	implementation(kotlin("reflect"))
+	implementation("io.github.rchowell:dotlin:+")
+	testImplementation(kotlin("test"))
 }
 
 kotlin {
-    jvmToolchain(22)
+	jvmToolchain(21)
 }
