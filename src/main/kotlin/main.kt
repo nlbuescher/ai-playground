@@ -1,7 +1,53 @@
 package dev.buescher.ai
 
+import java.io.*
+import kotlin.random.*
+
 fun main() {
-	neuralNet()
+	val t = Tensor(listOf(1))
+	println(t.shape)
+}
+
+fun languageModeling() {
+	val words = FileReader("names.txt").readLines()
+
+	val N = Matrix(27, 27)
+	val chars = words.joinToString("")
+		.toCharArray()
+		.toSet()
+		.sorted()
+		.let { listOf('.') + it }
+
+	val stoi = chars.mapIndexed { i, it -> it to i }.toMap()
+	val itos = stoi.map { (it, i) -> i to it }.toMap()
+
+	words.forEach { word ->
+		val c = listOf('.') + word.toCharArray().asList() + listOf('.')
+		c.windowed(2).forEach { (c1, c2) ->
+			N[stoi.getValue(c1), stoi.getValue(c2)] += 1
+		}
+	}
+
+//	val P = N / N.sumColumns()
+
+	val generator = Random(2147483647)
+
+	repeat(20) {
+		val out = mutableListOf<Char>()
+		var i = 0
+		while (true) {
+			val p = N[i]
+			i = multinomial(p, sampleCount = 1, generator).first()
+			if (i == 0) {
+				break
+			}
+			else {
+				out.add(itos[i]!!)
+			}
+		}
+
+		println(out.joinToString(""))
+	}
 }
 
 // Neural Net training example
